@@ -1,0 +1,56 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if (Schema::hasTable('jobs')) {
+            Schema::table('jobs', function (Blueprint $table) {
+
+                if (!Schema::hasColumn('jobs', 'reserved')) {
+                    $table->integer('reserved')->nullable();
+                }
+
+                if (!Schema::hasColumn('jobs', 'mw_processed')) {
+                    $table->integer('mw_processed')->nullable();
+                }
+
+                if (!Schema::hasColumn('jobs', 'job_hash')) {
+                    $table->longText('job_hash')->nullable();
+                }
+
+                if (!Schema::hasColumn('jobs', 'updated_at')) {
+                    $table->timestamp('updated_at')->nullable();
+                }
+
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        if (Schema::hasTable('jobs')) {
+            Schema::table('jobs', function (Blueprint $table) {
+                $columns = ['reserved', 'mw_processed', 'job_hash', 'updated_at'];
+                foreach ($columns as $column) {
+                    if (Schema::hasColumn('jobs', $column)) {
+                        $table->dropColumn($column);
+                    }
+                }
+            });
+        }
+    }
+};
